@@ -1,0 +1,4 @@
+github.com/culqi/culqi-go v0.0.0-20230111211903-30f1cbb6769b h1:l97ntKnhqGYNPCB+WnNeI3fb92tk+Nrvd60YW80a014=
+github.com/culqi/culqi-go v0.0.0-20230111211903-30f1cbb6769b/go.mod h1:ZW3l75PwzD+NJ671SfZ1tbmtBF44xrkLmyNPiM/LlVY=
+github.com/go-chi/chi v1.5.4 h1:QHdzF2szwjqVV4wmByUnTcsbIg7UGaQ0tPF2t5GcAIs=
+github.com/go-chi/chi v1.5.4/go.mod h1:uaf8YgoFazUOkPBG7fxPftUylNumIev9awIWOENIuEg=
