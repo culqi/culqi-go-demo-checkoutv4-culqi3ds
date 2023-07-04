@@ -10,6 +10,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"strings"
 	"text/template"
 
 	"github.com/culqi/culqi-go"
@@ -19,6 +20,11 @@ import (
 var pk string = "INSERTE_SU_LLAVE_PUBLICA"
 var sk string = "INSERTE_SU_LLAVE_PRIVADA"
 var puerto string = ":3000"
+var encrypt = "1"
+var encryptiondData = []byte(`{		
+	"rsa_public_key": "INSERTE_SU_LLAVE_RSA",
+	"rsa_id": "INSERTE_SU_RSA_ID"
+}`)
 
 func main() {
 	r := chi.NewRouter()
@@ -81,12 +87,32 @@ func chargePageHandler(w http.ResponseWriter, r *http.Request) {
 
 	culqi.Key(sk)
 
-	res, err := culqi.CreateCharge(reqBody)
-	fmt.Println(err)
-	fmt.Println(res)
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(res)
+	if encrypt == "1" {
+		res, err := culqi.CreateCharge(reqBody, encryptiondData)
+		fmt.Println(err)
+		fmt.Println(res)
+		w.Header().Set("Content-Type", "application/json")
+		if strings.Contains(res, "REVIEW") {
+			w.WriteHeader(http.StatusCreated)
+		} else {
+			w.WriteHeader(http.StatusOK)
+		}
+
+		json.NewEncoder(w).Encode(res)
+	} else {
+		res, err := culqi.CreateCharge(reqBody, nil)
+		fmt.Println(err)
+		fmt.Println(res)
+		w.Header().Set("Content-Type", "application/json")
+		if strings.Contains(res, "REVIEW") {
+			w.WriteHeader(http.StatusCreated)
+		} else {
+			w.WriteHeader(http.StatusOK)
+		}
+
+		json.NewEncoder(w).Encode(res)
+	}
+
 }
 func customerPageHandler(w http.ResponseWriter, r *http.Request) {
 	reqBody, _ := ioutil.ReadAll(r.Body)
