@@ -10,6 +10,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"strings"
 	"text/template"
 
 	"github.com/culqi/culqi-go"
@@ -19,6 +20,13 @@ import (
 var pk string = "pk_test_90667d0a57d45c48"
 var sk string = "sk_test_1573b0e8079863ff"
 var puerto string = ":3000"
+var encrypt = "1"
+var encryptiondData = []byte(`{		
+	"rsa_public_key": "-----BEGIN PUBLIC KEY-----
+	MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDYR6Oqz+vX2amSnNzPosH1CIMocGnHCnxlr1RuRyYtrAAVv3oxpSx42R9KIbW3yBfWwFxpU9m1us1ZjPmISRmjy64z6q6rv5UZNOWllM5v2A+F2MceWHRIJYOxIwV9oAx36EH89qOEnOekVLqZhkdrAx2LvLfqGprKsDcfX06urwIDAQAB
+-----END PUBLIC KEY-----",
+	"rsa_id": "f355d27f-e735-46a7-b8bd-9773357ff034"
+}`)
 
 func main() {
 	r := chi.NewRouter()
@@ -81,12 +89,32 @@ func chargePageHandler(w http.ResponseWriter, r *http.Request) {
 
 	culqi.Key(sk)
 
-	res, err := culqi.CreateCharge(reqBody)
-	fmt.Println(err)
-	fmt.Println(res)
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(res)
+	if encrypt == "1" {
+		res, err := culqi.CreateCharge(reqBody, encryptiondData)
+		fmt.Println(err)
+		fmt.Println(res)
+		w.Header().Set("Content-Type", "application/json")
+		if strings.Contains(res, "REVIEW") {
+			w.WriteHeader(http.StatusCreated)
+		} else {
+			w.WriteHeader(http.StatusOK)
+		}
+
+		json.NewEncoder(w).Encode(res)
+	} else {
+		res, err := culqi.CreateCharge(reqBody, nil)
+		fmt.Println(err)
+		fmt.Println(res)
+		w.Header().Set("Content-Type", "application/json")
+		if strings.Contains(res, "REVIEW") {
+			w.WriteHeader(http.StatusCreated)
+		} else {
+			w.WriteHeader(http.StatusOK)
+		}
+
+		json.NewEncoder(w).Encode(res)
+	}
+
 }
 func customerPageHandler(w http.ResponseWriter, r *http.Request) {
 	reqBody, _ := ioutil.ReadAll(r.Body)
