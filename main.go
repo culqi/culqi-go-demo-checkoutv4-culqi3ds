@@ -10,7 +10,6 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
-	"strconv"
 	"text/template"
 
 	"github.com/culqi/culqi-go"
@@ -20,7 +19,7 @@ import (
 var pk string = "pk_test_e94078b9b248675d"
 var sk string = "sk_test_c2267b5b262745f0"
 var puerto string = ":3000"
-var encrypt = "1"
+var encrypt = "0"
 var encryptiondData = []byte(`{		
 	"rsa_public_key": "-----BEGIN PUBLIC KEY-----
 	MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDYR6Oqz+vX2amSnNzPosH1CIMocGnHCnxlr1RuRyYtrAAVv3oxpSx42R9KIbW3yBfWwFxpU9m1us1ZjPmISRmjy64z6q6rv5UZNOWllM5v2A+F2MceWHRIJYOxIwV9oAx36EH89qOEnOekVLqZhkdrAx2LvLfqGprKsDcfX06urwIDAQAB
@@ -78,12 +77,22 @@ func cardsPageHandler(w http.ResponseWriter, r *http.Request) {
 	reqBody, _ := ioutil.ReadAll(r.Body)
 
 	culqi.Key(pk, sk)
-	statusCode, res, err := culqi.CreateCard(reqBody, encryptiondData...)
-	fmt.Println(statusCode)
-	fmt.Println(err)
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(res)
+	if encrypt == "1" {
+		statusCode, res, _ := culqi.CreateCard(reqBody, encryptiondData...)
+		fmt.Println(statusCode)
+		fmt.Println(res)
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(statusCode)
+		w.Write([]byte(res))
+	} else {
+		statusCode, res, _ := culqi.CreateCard(reqBody)
+		fmt.Println("Resultados")
+		fmt.Println(statusCode)
+		fmt.Println(res)
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(statusCode)
+		w.Write([]byte(res))
+	}
 }
 func chargePageHandler(w http.ResponseWriter, r *http.Request) {
 	reqBody, _ := ioutil.ReadAll(r.Body)
@@ -91,52 +100,23 @@ func chargePageHandler(w http.ResponseWriter, r *http.Request) {
 
 	culqi.Key(pk, sk)
 
-	var (
-		statusCode string
-		res        string
-	)
-
 	if encrypt == "1" {
 		statusCode, res, _ := culqi.CreateCharge(reqBody, encryptiondData...)
 		fmt.Println(statusCode)
 		fmt.Println(res)
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(statusCode)
+		w.Write([]byte(res))
 	} else {
 		statusCode, res, _ := culqi.CreateCharge(reqBody)
+		fmt.Println("Resultados")
 		fmt.Println(statusCode)
 		fmt.Println(res)
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(statusCode)
+		w.Write([]byte(res))
 	}
-	w.Header().Set("Content-Type", "application/json")
-	code, _ := strconv.Atoi(statusCode)
-	w.WriteHeader(code)
-	json.NewEncoder(w).Encode(res)
 
-	/*
-		if encrypt == "1" {
-			statusCode, res, err := culqi.CreateCharge(reqBody, encryptiondData...)
-			fmt.Println(err)
-			fmt.Println(res)
-			w.Header().Set("Content-Type", "application/json")
-			if strings.Contains(res, "REVIEW") {
-				w.WriteHeader(statusCode)
-			} else {
-				w.WriteHeader(http.StatusOK)
-			}
-
-			json.NewEncoder(w).Encode(res)
-		} else {
-			res, err := culqi.CreateCharge(reqBody, nil)
-			fmt.Println(err)
-			fmt.Println(res)
-			w.Header().Set("Content-Type", "application/json")
-			if strings.Contains(res, "REVIEW") {
-				w.WriteHeader(http.StatusCreated)
-			} else {
-				w.WriteHeader(http.StatusOK)
-			}
-
-			json.NewEncoder(w).Encode(res)
-		}
-	*/
 }
 func customerPageHandler(w http.ResponseWriter, r *http.Request) {
 	reqBody, _ := ioutil.ReadAll(r.Body)
@@ -149,8 +129,8 @@ func customerPageHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Println(statusCode)
 	fmt.Println(err)
 	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusCreated)
-	json.NewEncoder(w).Encode(res)
+	w.WriteHeader(statusCode)
+	w.Write([]byte(res))
 }
 
 func orderPageHandler(w http.ResponseWriter, r *http.Request) {
