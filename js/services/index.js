@@ -48,11 +48,11 @@ class Service {
   };
 
   createCustomer = async (bodyCustomers) => {
-    return this.#http2({ endPoint: "createCustomer", body: bodyCustomers });
+    return this.#http2({ endPoint: "generateCustomer", body: bodyCustomers });
   };
 
   createCard = async (bodyCard) => {
-    return this.#http2({ endPoint: "createCard", body: bodyCard });
+    return this.#http2({ endPoint: "generateCards", body: bodyCard });
   };
 }
 

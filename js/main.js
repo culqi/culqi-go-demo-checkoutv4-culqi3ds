@@ -42,7 +42,7 @@ let tokenId,
 window.addEventListener(
   "message",
   async function (event) {
-    if (event.origin === window.location.origin) {
+    if (event.origin === window.location.origin) {     
       const { parameters3DS, error } = event.data;
 
       if (parameters3DS) {
@@ -56,7 +56,7 @@ window.addEventListener(
             parameters3DS,
           }); //2da llamada a cargo
           objResponse = responseCharge.data.object;
-          statusCode = responseCharge.statusCode;
+          statusCode = responseCharge.statusCode; 
         } else {
           const responseCard = await createCardImpl({
             customerId,
@@ -100,7 +100,6 @@ window.culqi = async () => {
 	let statusCode = null;
     let objResponse = null;
     if (paymenType === "cargo") {
-      console.log("pagosss");
       const responseCharge = await generateChargeImpl({
         deviceId,
         email,
