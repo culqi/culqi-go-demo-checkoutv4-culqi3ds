@@ -3,6 +3,11 @@ import config,{ customerInfo } from "../../config/index.js";
 
 const service = new Service();
 
+var fechaActual = new Date();
+fechaActual.setDate(fechaActual.getDate() + 1);
+var epoch = Math.floor(fechaActual.getTime() / 1000);
+console.log("Epoch del día siguiente:", epoch);
+
 export const generateOrderImpl = async () => {
   const bodyRequest = {
     amount: config.TOTAL_AMOUNT,
@@ -15,6 +20,8 @@ export const generateOrderImpl = async () => {
       email: customerInfo.email,
       phone_number: customerInfo.phone
     },
+    expiration_date: epoch,
+    confirm: false
   }
   return service.createOrder(bodyRequest);
 }
