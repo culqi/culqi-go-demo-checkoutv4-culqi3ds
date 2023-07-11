@@ -18,7 +18,7 @@ class Service {
   };
   
   #http2 = async ({ endPoint, method = "POST", body = {}, headers = {} }) => {
-	let statusCode = 506; 
+	let statusCode = 502; 
 	try {
 	    const response = await $.ajax({
 	      type: 'POST',
@@ -35,8 +35,6 @@ class Service {
 	    const responseJSON = await response;
 	    return { statusCode: statusCode, data: responseJSON }
     } catch (err) {
-      console.log("Exception")
-      console.log(err)
       return { statusCode: statusCode, data: null }
     }
   }
@@ -50,7 +48,7 @@ class Service {
   };
 
   createCustomer = async (bodyCustomers) => {
-    return this.#http({ endPoint: "createCustomer", body: bodyCustomers });
+    return this.#http2({ endPoint: "createCustomer", body: bodyCustomers });
   };
 
   createCard = async (bodyCard) => {
