@@ -30,7 +30,8 @@ class Service {
 	        //response = data;
 	      }
 	    });
-	    const responseJSON = await response;console.log('statusCode',statusCode);
+      console.log('statusCode',statusCode);
+	    const responseJSON = await response;
 	    return { statusCode: statusCode, data: responseJSON }
     } catch (err) {
       return { statusCode: statusCode, data: null }
@@ -46,11 +47,11 @@ class Service {
   };
 
   createCustomer = async (bodyCustomers) => {
-    return this.#http({ endPoint: "createCustomer", body: bodyCustomers });
+    return this.#http2({ endPoint: "generateCustomer", body: bodyCustomers });
   };
 
   createCard = async (bodyCard) => {
-    return this.#http2({ endPoint: "createCard", body: bodyCard });
+    return this.#http2({ endPoint: "generateCard", body: bodyCard });
   };
 }
 
