@@ -21,12 +21,10 @@ Primero se tiene que modificar los valores del archivo `config/config.go` que se
 ```
 var pk string = " Llave pública del comercio (pk_test_xxxxxxxxx)"
 var sk string = "Llave secreta del comercio (sk_test_xxxxxxxxx)"
-var puerto string = ":3000"
-var encrypt = "0" // 1 = activar encriptación
-var encryptiondData = []byte(`{		
-	"rsa_public_key": "Llave pública RSA que sirve para encriptar el payload de los servicios",
-	"rsa_id": "Id de la llave RSA"
-}`)
+var rsa_id = "Id de la llave RSA"
+var rsa_public_key = "Llave pública RSA que sirve para encriptar el payload de los servicios"
+var Puerto string = ":3000"
+var Encrypt = "0" // 1 = activar encriptación
 ```
 ## Configuración frontend
 
