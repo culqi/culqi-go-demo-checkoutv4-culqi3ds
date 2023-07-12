@@ -12,11 +12,13 @@ import * as selectors from "./helpers/selectors.js";
 let jsonParams = {
   installments: paymenType === "cargo" ? true : false,
   orderId: paymenType === "cargo" ? await generarOrder() : '',
+  buttonTex: paymenType === "cargo" ? '' : 'Guardar Tarjeta',
+  amount : paymenType === "cargo" ? config.TOTAL_AMOUNT : ''
 }
 
 async function generarOrder(){
   const { statusCode, data } = await generateOrderImpl();
-  if (statusCode === 200) {
+  if (statusCode === 201) {
     console.log("Order",data);
     return data.id;
   } else {
@@ -39,12 +41,12 @@ let tokenId,
 window.addEventListener(
   "message",
   async function (event) {
-    if (event.origin === window.location.origin) {
+    if (event.origin === window.location.origin) {     
       const { parameters3DS, error } = event.data;
 
       if (parameters3DS) {
         let statusCode = null;
-        let objRespone = null;
+        let objResponse = null;
         if (paymenType === "cargo") {
           const responseCharge = await generateChargeImpl({
             deviceId,
@@ -52,8 +54,8 @@ window.addEventListener(
             tokenId,
             parameters3DS,
           }); //2da llamada a cargo
-          objRespone = responseCharge.data.object;
-          statusCode = responseCharge.statusCode;
+          objResponse = responseCharge.data.object;
+          statusCode = responseCharge.statusCode; 
         } else {
           const responseCard = await createCardImpl({
             customerId,
@@ -61,21 +63,19 @@ window.addEventListener(
             deviceId,
             parameters3DS,
           }); //2da llamada a creacion de CARD, validacion de 1 sol
-          objRespone = responseCard.data.object;
+          objResponse = responseCard.data.object;
           statusCode = responseCard.statusCode;
         }
 
-        if (statusCode === 200 || statusCode === 201) {
-          if (objRespone == "charge") {
-            $("#response_card").text("COMPRA REALIZADA EXITOSAMENTE");
-          } else {
-            $("#response_card").text("TARJETA CREADA EXITOSAMENTE");
+        if (statusCode === 201) {
+          if (objResponse == "charge" || objResponse == "card") {
+            $("#response_card").text("OPERACIÓN REALIZADA EXITOSAMENTE");
           }
           selectors.loadingElement.style.display = "none";
           Culqi3DS.reset();
         } else {
           selectors.paymentFailElement.style.display = "block";
-        ﬁﬁ.reset();
+          Culqi3DS.reset();
         }
       }
 
@@ -96,44 +96,35 @@ window.culqi = async () => {
     email = Culqi.token.email;
     selectors.loadingElement.style.display = "block";
 
+	let statusCode = null;
+    let objResponse = null;
     if (paymenType === "cargo") {
-      console.log("pagosss");
-      const { statusCode, data } = await generateChargeImpl({
+      const responseCharge = await generateChargeImpl({
         deviceId,
         email,
         tokenId,
       }); //1ra llamada a cargo
-      if (statusCode === 200) {
-		if(data.action_code === "REVIEW"){
-			validationInit3DS({ email, statusCode, tokenId });
-		}else{
-			$("#response_card").text("ERROR AL REALIZAR EL CARGO");
-		}
-	   } else if (statusCode === 201) {
-			$("#response_card").text("CARGO EXITOSO - SIN 3DS");
-	      	Culqi3DS.reset();
-       } else {
-	      $("#response_card").text("CARGO FALLIDO - SIN 3DS");
-	      	Culqi3DS.reset();
-	   }
+      objResponse = responseCharge.data;
+      statusCode = responseCharge.statusCode;
     } else {
       customerId = selectors.customerCustomFormElement.value;
-      const { statusCode, data } = await createCardImpl({ customerId, tokenId }); // 1ra llamada a creacion de CARDS
-
-      if (statusCode === 200) {
-		if(data.action_code === "REVIEW"){
-			validationInit3DS({ email, statusCode, tokenId });
-		}else{
-			$("#response_card").text("ERROR AL REALIZAR LA CREACION DE TARJETA");
-		}
-	  } else if (statusCode === 201) {
-			$("#response_card").text("TAJETA EXITOSA - SIN 3DS");
-	      	Culqi3DS.reset();
-       } else {
-	      $("#response_card").text("TARJETA FALLIDA - SIN 3DS");
-	      	Culqi3DS.reset();
-	   }
+      const responseCard = await createCardImpl({ customerId, tokenId, deviceId }); // 1ra llamada a creacion de CARDS
+ 	  objResponse = responseCard.data;
+      statusCode = responseCard.statusCode;
     }
+    if (statusCode === 200) {
+      if(objResponse.action_code === "REVIEW"){
+        validationInit3DS({ email, statusCode, tokenId });
+      }else{
+        $("#response_card").text("ERROR AL REALIZAR LA OPERACIÓN");
+      }
+	   } else if (statusCode === 201) {
+			   $("#response_card").text("OPERACIÓN EXITOSA - SIN 3DS");
+	      	Culqi3DS.reset();
+     } else {
+        $("#response_card").text("OPERACIÓN FALLIDA - SIN 3DS");
+        Culqi3DS.reset();
+	   }
   } else {
     console.log(Culqi.error);
     alert(Culqi.error.user_message);
