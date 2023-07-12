@@ -14,9 +14,41 @@ La demo integra Culqi Go, Checkout V4 , Culqi 3DS y es compatible con la v2.0 de
 
 > Recuerda que las credenciales son enviadas al correo que registraste en el proceso de afiliación.
 
-## Configuración
+## Configuración backend
 
-Dentro del archivo **main.go** coloca tus llaves pk y sk.
+Primero se tiene que modificar los valores del archivo `config/config.go` que se encuentra en al raíz del proyecto. A continuación un ejemplo.
+
+```
+var pk string = " Llave pública del comercio (INSERTE_SU_LLAVE_PUBLICA)"
+var sk string = "Llave secreta del comercio (INSERTE_SU_LLAVE_PRIVADA)"
+var puerto string = ":3000"
+var encrypt = "0" // 1 = activar encriptación
+var encryptiondData = []byte(`{		
+	"rsa_public_key": "INSERTE_SU_LLAVE_RSA",
+	"rsa_id": "Id de la llave RSA"
+}`)
+```
+## Configuración frontend
+
+Para configurar los datos del cargo, pk del comercio y datos del cliente se tiene que modificar en el archivo `js/config/index.js`.
+
+```js
+export default Object.freeze({
+    TOTAL_AMOUNT: monto de pago,
+    CURRENCY: tipo de moneda,
+    PUBLIC_KEY: llave publica del comercio (INSERTE_SU_LLAVE_PUBLICA),
+    RSA_ID: Id de la llave RSA,
+    RSA_PUBLIC_KEY: Llave pública RSA que sirve para encriptar el payload de los servicios del checkout,
+    COUNTRY_CODE: iso code del país(Ejemplo PE)
+});
+
+export const customerInfo = {
+    firstName: "Fernando",
+    lastName: "Chullo",
+    address: "Coop. Villa el Sol",
+    phone: "945737476",
+}
+```
 
 ## Inicializar la demo
 
