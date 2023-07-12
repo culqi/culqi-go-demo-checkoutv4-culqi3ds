@@ -1,7 +1,6 @@
 package main
 
 import (
-	"encoding/json"
 	"errors"
 	"fmt"
 	"io/ioutil"
@@ -14,18 +13,9 @@ import (
 
 	"github.com/culqi/culqi-go"
 	"github.com/go-chi/chi"
-)
 
-var pk string = "pk_test_e94078b9b248675d"
-var sk string = "sk_test_c2267b5b262745f0"
-var puerto string = ":3000"
-var encrypt = "0"
-var encryptiondData = []byte(`{		
-	"rsa_public_key": "-----BEGIN PUBLIC KEY-----
-	MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDYR6Oqz+vX2amSnNzPosH1CIMocGnHCnxlr1RuRyYtrAAVv3oxpSx42R9KIbW3yBfWwFxpU9m1us1ZjPmISRmjy64z6q6rv5UZNOWllM5v2A+F2MceWHRIJYOxIwV9oAx36EH89qOEnOekVLqZhkdrAx2LvLfqGprKsDcfX06urwIDAQAB
------END PUBLIC KEY-----",
-	"rsa_id": "f355d27f-e735-46a7-b8bd-9773357ff034"
-}`)
+	config "culqi-go-demo/config"
+)
 
 func main() {
 	r := chi.NewRouter()
@@ -42,22 +32,11 @@ func main() {
 	//http.HandleFunc("/index-card", homePageHandler)
 	r.Get("/index-card", homePageHandler)
 	r.Get("/", homePage2Handler)
-	r.Post("/culqi/generateCards", cardsPageHandler)
+	r.Post("/culqi/generateCard", cardsPageHandler)
 	r.Post("/culqi/generateCustomer", customerPageHandler)
 	r.Post("/culqi/generateCharge", chargePageHandler)
 	r.Post("/culqi/generateOrder", orderPageHandler)
-	r.Get("/admin", adminPageHandler)
-	http.ListenAndServe(puerto, r)
-}
-
-type Customers struct {
-	FirstName   string `json:"first_name"`
-	LastName    string `json:"last_name"`
-	Email       string `json:"email"`
-	Address     string `json:"address"`
-	AddressCity string `json:"address_city"`
-	CountryCode string `json:"country_code"`
-	PhoneNumber string `json:"phone_number"`
+	http.ListenAndServe(config.Puerto, r)
 }
 
 func homePageHandler(w http.ResponseWriter, r *http.Request) {
@@ -70,15 +49,13 @@ func homePage2Handler(w http.ResponseWriter, r *http.Request) {
 	template.Execute(w, nil)
 }
 
-func adminPageHandler(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("This is admin page"))
-}
+// Consumo de servicios
 func cardsPageHandler(w http.ResponseWriter, r *http.Request) {
 	reqBody, _ := ioutil.ReadAll(r.Body)
 
-	culqi.Key(pk, sk)
-	if encrypt == "1" {
-		statusCode, res, _ := culqi.CreateCard(reqBody, encryptiondData...)
+	//culqi.Key(pk, sk)
+	if config.Encrypt == "1" {
+		statusCode, res, _ := culqi.CreateCard(reqBody, config.EncryptionData...)
 		fmt.Println(statusCode)
 		fmt.Println(res)
 		w.Header().Set("Content-Type", "application/json")
@@ -98,10 +75,10 @@ func chargePageHandler(w http.ResponseWriter, r *http.Request) {
 	reqBody, _ := ioutil.ReadAll(r.Body)
 	log.Printf("error decoding sakura response: %v", reqBody)
 
-	culqi.Key(pk, sk)
+	//culqi.Key(pk, sk)
 
-	if encrypt == "1" {
-		statusCode, res, _ := culqi.CreateCharge(reqBody, encryptiondData...)
+	if config.Encrypt == "1" {
+		statusCode, res, _ := culqi.CreateCharge(reqBody, config.EncryptionData...)
 		fmt.Println(statusCode)
 		fmt.Println(res)
 		w.Header().Set("Content-Type", "application/json")
@@ -119,15 +96,24 @@ func chargePageHandler(w http.ResponseWriter, r *http.Request) {
 
 }
 func customerPageHandler(w http.ResponseWriter, r *http.Request) {
-	reqBody, _ := ioutil.ReadAll(r.Body)
-	var post Customers
-	json.Unmarshal(reqBody, &post)
 
-	culqi.Key(pk, sk)
+	fmt.Println(r.Body)
+	reqBody, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		log.Fatal(err)
+	}
+	bodyString := string(reqBody)
+	fmt.Println(bodyString)
+	log.Printf("error decoding sakura response: %v", reqBody)
+
+	//culqi.Key(pk, sk)
 
 	statusCode, res, err := culqi.CreateCustomer(reqBody)
-	fmt.Println(statusCode)
 	fmt.Println(err)
+	fmt.Println("statusCode")
+	fmt.Println(statusCode)
+	fmt.Println(res)
+
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(statusCode)
 	w.Write([]byte(res))
@@ -143,22 +129,15 @@ func orderPageHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Println(bodyString)
 	log.Printf("error decoding sakura response: %v", reqBody)
 
-	culqi.Key(pk, sk)
+	//culqi.Key(pk, sk)
 
-	statusCode, res, err := culqi.CreateOrder(reqBody)
+	statusCode, res, err := culqi.CreateOrder(reqBody, config.EncryptionData...)
 	fmt.Println(err)
 	fmt.Println("statusCode")
 	fmt.Println(statusCode)
 	fmt.Println(res)
 
 	w.Header().Set("Content-Type", "application/json")
-	//code, _ := strconv.Atoi(statusCode)
 	w.WriteHeader(statusCode)
-	w.Write([]byte(res)) /*
-		jsonData, err := json.Marshal(res)
-		w.Write(jsonData)
-		fmt.Println(jsonData)*/
-	//json.NewDecoder(w).Decode(res)
-	//json.NewEncoder(w).Encode(res)
-
+	w.Write([]byte(res))
 }

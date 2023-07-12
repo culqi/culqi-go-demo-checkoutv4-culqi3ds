@@ -18,7 +18,6 @@ let jsonParams = {
 
 async function generarOrder(){
   const { statusCode, data } = await generateOrderImpl();
-  console.log("hola",data);
   if (statusCode === 201) {
     console.log("Order",data);
     return data.id;
@@ -114,17 +113,17 @@ window.culqi = async () => {
       statusCode = responseCard.statusCode;
     }
     if (statusCode === 200) {
-		if(objResponse.action_code === "REVIEW"){
-			validationInit3DS({ email, statusCode, tokenId });
-		}else{
-			$("#response_card").text("ERROR AL REALIZAR LA OPERACIÓN");
-		}
+      if(objResponse.action_code === "REVIEW"){
+        validationInit3DS({ email, statusCode, tokenId });
+      }else{
+        $("#response_card").text("ERROR AL REALIZAR LA OPERACIÓN");
+      }
 	   } else if (statusCode === 201) {
-			$("#response_card").text("OPERACIÓN EXITOSA - SIN 3DS");
+			   $("#response_card").text("OPERACIÓN EXITOSA - SIN 3DS");
 	      	Culqi3DS.reset();
-       } else {
-	      $("#response_card").text("OPERACIÓN FALLIDA - SIN 3DS");
-	      	Culqi3DS.reset();
+     } else {
+        $("#response_card").text("OPERACIÓN FALLIDA - SIN 3DS");
+        Culqi3DS.reset();
 	   }
   } else {
     console.log(Culqi.error);

@@ -28,7 +28,6 @@ class Service {
 	      success: function (data, status, xhr) {
 	        statusCode = xhr.status;
 	        //response = data;
-          console.log('xhr.status',xhr.status);
 	      }
 	    });
       console.log('statusCode',statusCode);
@@ -52,7 +51,7 @@ class Service {
   };
 
   createCard = async (bodyCard) => {
-    return this.#http2({ endPoint: "generateCards", body: bodyCard });
+    return this.#http2({ endPoint: "generateCard", body: bodyCard });
   };
 }
 
