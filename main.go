@@ -13,20 +13,17 @@ import (
 
 	"github.com/culqi/culqi-go"
 	"github.com/go-chi/chi"
+	"github.com/rs/cors"
 
 	config "culqi-go-demo/config"
 )
-
-func enableCors(w *http.ResponseWriter) {
-	(*w).Header().Set("Access-Control-Allow-Origin", "*")
-}
 
 func main() {
 	r := chi.NewRouter()
 	mime.AddExtensionType(".js", "application/javascript; charset=utf-8")
 
 	r.Get("/*", func(w http.ResponseWriter, r *http.Request) {
-		enableCors(&w)
+		//enableCors(&w)
 		workDir, _ := os.Getwd()
 		filesDir := filepath.Join(workDir, "js")
 		if _, err := os.Stat(filesDir + r.URL.Path); errors.Is(err, os.ErrNotExist) {
@@ -41,7 +38,13 @@ func main() {
 	r.Post("/culqi/generateCustomer", customerPageHandler)
 	r.Post("/culqi/generateCharge", chargePageHandler)
 	r.Post("/culqi/generateOrder", orderPageHandler)
-	http.ListenAndServe(config.Puerto, r)
+	c := cors.New(cors.Options{
+		AllowedOrigins:   []string{"*"},
+		AllowCredentials: true,
+		AllowedMethods:   []string{"GET", "DELETE", "POST", "PUT"},
+	})
+	handler := c.Handler(r)
+	http.ListenAndServe(config.Puerto, handler)
 }
 
 func homePageHandler(w http.ResponseWriter, r *http.Request) {
