@@ -17,11 +17,16 @@ import (
 	config "culqi-go-demo/config"
 )
 
+func enableCors(w *http.ResponseWriter) {
+	(*w).Header().Set("Access-Control-Allow-Origin", "*")
+}
+
 func main() {
 	r := chi.NewRouter()
 	mime.AddExtensionType(".js", "application/javascript; charset=utf-8")
 
 	r.Get("/*", func(w http.ResponseWriter, r *http.Request) {
+		enableCors(&w)
 		workDir, _ := os.Getwd()
 		filesDir := filepath.Join(workDir, "js")
 		if _, err := os.Stat(filesDir + r.URL.Path); errors.Is(err, os.ErrNotExist) {

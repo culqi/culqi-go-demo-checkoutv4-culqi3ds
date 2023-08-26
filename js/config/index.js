@@ -4,12 +4,12 @@ export default Object.freeze({
   CURRENCY: "PEN",
   PUBLIC_KEY: "pk_test_e94078b9b248675d",
   COUNTRY_CODE: "PE",
-  RSA_ID: "2ab335ad-c40d-4375-8dad-3ea315de23b0",
+  RSA_ID: "de35e120-e297-4b96-97ef-10a43423ddec",
   RSA_PUBLIC_KEY: '-----BEGIN PUBLIC KEY-----'+
-  'MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQC9hD00BnivDj73/1SKZw5AyQvw'+
-  'FpvR/DKzW7Jqg1iwFWXrX6k1r57qZJH2wF1tZ9T3wTyw1we6BYgwPNRVC1IXe+E8'+
-  'B6xAWG8ta7BCZK/a6IFL+l9Q9BhkHBeVTD7qGEfCjhnB7QtyrTQwmytoNBKk1Tl7'+
-  'kbz8NO7jeiUxkZm75wIDAQAB'+
+  'MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDswQycch0x/7GZ0oFojkWCYv+g'+
+  'r5CyfBKXc3Izq+btIEMCrkDrIsz4Lnl5E3FSD7/htFn1oE84SaDKl5DgbNoev3pM'+
+  'C7MDDgdCFrHODOp7aXwjG8NaiCbiymyBglXyEN28hLvgHpvZmAn6KFo0lMGuKnz8'+
+  'HiuTfpBl6HpD6+02SQIDAQAB'+
   '-----END PUBLIC KEY-----',
   URL_BASE: "http://localhost:3000",
 });

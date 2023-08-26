@@ -1,5 +1,5 @@
-github.com/culqi/culqi-go v0.0.0-20230711013133-717467511191 h1:9tfr4y/QbCvENwTcIODzOo13eYnO70BOIFYh3Dz/tpQ=
-github.com/culqi/culqi-go v0.0.0-20230711013133-717467511191/go.mod h1:dVdpq0jWHyuPWYppfRqZF6P6ydTdIA46j18osa+4BbY=
+github.com/culqi/culqi-go v1.0.0 h1:3jZyM+0YsXar7LsCE3MJPGpH5bxWBiX66oqPkB/PvVg=
+github.com/culqi/culqi-go v1.0.0/go.mod h1:dVdpq0jWHyuPWYppfRqZF6P6ydTdIA46j18osa+4BbY=
 github.com/go-chi/chi v1.5.4 h1:QHdzF2szwjqVV4wmByUnTcsbIg7UGaQ0tPF2t5GcAIs=
 github.com/go-chi/chi v1.5.4/go.mod h1:uaf8YgoFazUOkPBG7fxPftUylNumIev9awIWOENIuEg=
 github.com/google/uuid v1.3.0/go.mod h1:TIyPZe4MgqvfeYDBFedMoGGpEw/LqOeaOT+nhxU+yHo=
