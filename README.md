@@ -14,15 +14,17 @@ La demo integra Culqi Go, Checkout V4 , Culqi 3DS y es compatible con la v2.0 de
 
 > Recuerda que las credenciales son enviadas al correo que registraste en el proceso de afiliación.
 
+Las pruebas realizan llamadas reales a Culqi. Usa tus propias llaves de prueba (`pk_test_`/`sk_test_`) y reemplaza los placeholders de configuración. No hagas commit de llaves ni otros secretos.
+
 ## Configuración backend
 
 Primero se tiene que modificar los valores del archivo `config/config.go` que se encuentra en al raíz del proyecto. A continuación un ejemplo.
 
 ```
-var pk string = " Llave pública del comercio (INSERTE_SU_LLAVE_PUBLICA)"
-var sk string = "Llave secreta del comercio (INSERTE_SU_LLAVE_PRIVADA)"
-var rsa_id = "Id de la llave RSA"
-var rsa_public_key = "Llave pública RSA que sirve para encriptar el payload de los servicios"
+var pk string = "INSERTE_SU_LLAVE_PUBLICA"
+var sk string = "INSERTE_SU_LLAVE_PRIVADA"
+var rsa_id = "INSERTE_SU_RSA_ID"
+var rsa_public_key = "INSERTE_SU_LLAVE_RSA"
 var Puerto string = ":3000"
 var Encrypt = "0" // 1 = activar encriptación
 ```
@@ -34,9 +36,9 @@ Para configurar los datos del cargo, pk del comercio, rsa_id, rsa_public_key y d
 export default Object.freeze({
     TOTAL_AMOUNT: monto de pago,
     CURRENCY: tipo de moneda,
-    PUBLIC_KEY: llave publica del comercio (INSERTE_SU_LLAVE_PUBLICA),
-    RSA_ID: Id de la llave RSA,
-    RSA_PUBLIC_KEY: Llave pública RSA que sirve para encriptar el payload de los servicios del checkout,
+    PUBLIC_KEY: "INSERTE_SU_LLAVE_PUBLICA",
+    RSA_ID: "INSERTE_SU_RSA_ID",
+    RSA_PUBLIC_KEY: "INSERTE_SU_LLAVE_RSA",
     COUNTRY_CODE: iso code del país(Ejemplo PE)
 });
 
